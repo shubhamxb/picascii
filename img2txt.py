@@ -1,7 +1,15 @@
+
+
 import argparse
 import cv2
 import numpy as np
 
+
+# parameters
+model_path = "model/model.json" # or "model/model_light.json"
+weight_path = "model/weight.hdf5" # or "model/weight_light.json"
+new_width = 0 # adjust the width of the image. the original width is used if new_width = 0.
+input_shape = [64, 64, 1]
 
 def get_args():
     parser = argparse.ArgumentParser("Image to ASCII")
@@ -14,17 +22,17 @@ def get_args():
     return args
 
 
-def main(opt):
-    if opt.mode == "simple":
+def main(input, output, mode, num_cols, scale):
+    if mode == "simple":
         CHAR_LIST = '@%#*+=-:. '
     else:
         CHAR_LIST = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
     num_chars = len(CHAR_LIST)
-    num_cols = opt.num_cols
-    image = cv2.imread(opt.input)
+    num_cols = num_cols
+    image = cv2.imread(input)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     height, width = image.shape
-    cell_width = width / opt.num_cols
+    cell_width = width / num_cols
     cell_height = 2 * cell_width
     num_rows = int(height / cell_height)
     if num_cols > width or num_rows > height:
@@ -34,7 +42,7 @@ def main(opt):
         num_cols = int(width / cell_width)
         num_rows = int(height / cell_height)
 
-    output_file = open(opt.output, 'w')
+    output_file = open(output, 'w')
     for i in range(num_rows):
         for j in range(num_cols):
             output_file.write(
@@ -44,7 +52,3 @@ def main(opt):
         output_file.write("\n")
     output_file.close()
 
-
-if __name__ == '__main__':
-    opt = get_args()
-    main(opt)
