@@ -70,7 +70,8 @@ html * {
 }
 
 .downloadlink{
-   padding: 5px;
+   font-size: larger;
+   padding: 2px;
    position: absolute;
    display: block;
    right: 85px;
